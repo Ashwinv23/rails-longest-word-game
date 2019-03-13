@@ -1,4 +1,14 @@
 
 <h3><%= @found %></h3>
 
+<% if @included %>
+  <% if @english_word %>
+    <p><strong>Congratulations!</strong> <%= @entered_word %> is a valid English word!</p>
+  <% else %>
+    <p>Sorry but <strong><%= @entered_word %></strong> does not seem to be a valid English word...</p>
+  <% end %>
+<% else %>
+  <p>Sorry but <strong><%= @entered_word %></strong> can't be built out of the given letters </p>
+<% end %>
+
 <%= link_to "Play Again", new_path %>

@@ -6,21 +6,22 @@ class GamesController < ApplicationController
   end
 
   def score
-    entered_word = params[:answer]
-    entered_letters_array = params[:answer].downcase.chars
-    original_letters_array = params[:letters].delete(' ').downcase.chars
+    @entered_word = params[:answer]
+    @entered_letters_array = params[:answer].downcase.chars
+    @original_letters_array = params[:letters].delete(' ').downcase.chars
+    @english_word = english_word?(@entered_word)
+    @included = included?(@entered_letters_array, @original_letters_array)
+  end
 
-    if (entered_letters_array - original_letters_array).empty?
-      url = "https://wagon-dictionary.herokuapp.com/#{entered_word}"
-      word_serialized = open(url).read
-      @result = JSON.parse(word_serialized)
-      @found = if @result['found']
-                 "Congratulations!! #{entered_word} is a valid English word."
-               else
-                 "Sorry but #{entered_word} doesn't seem to be a valid English word"
-               end
-    else
-      @cant_be_built = "Sorry but #{entered_word} can't be built out of the letters given"
-    end
+  private
+
+  def included?(entered_letters_array, original_letters_array)
+    (entered_letters_array - original_letters_array).empty?
+  end
+
+  def english_word?(word)
+    response = open("https://wagon-dictionary.herokuapp.com/#{word}")
+    json = JSON.parse(response.read)
+    json['found']
   end
 end
